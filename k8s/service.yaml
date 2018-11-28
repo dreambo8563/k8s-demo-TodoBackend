@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: todo-backend-service
+spec:
+  type: NodePort
+  selector:
+    component: todo-backend
+  ports:
+    - protocol: TCP
+      nodePort: 31000
+      port: 8080
+      targetPort: 8080

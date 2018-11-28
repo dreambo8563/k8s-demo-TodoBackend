@@ -13,7 +13,7 @@ func GetToken(id string) (token string, err error) {
 		ID string `json:"id"`
 	}
 	reqParam.ID = id
-	r, err := req.Post("http://localhost:7000/api/auth/login", req.BodyJSON(&reqParam))
+	r, err := req.Post("http://todo-auth-service:6000/api/auth/login", req.BodyJSON(&reqParam))
 	if err != nil {
 		return "", err
 	}

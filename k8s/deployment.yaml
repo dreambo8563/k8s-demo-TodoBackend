@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-backend-deployment
+  labels:
+    app: todo
+    component: todo-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: todo-backend
+  template:
+    metadata:
+      labels:
+        component: todo-backend
+    spec:
+      containers:
+        - name: component
+          image: dreambo8563docker/todo-backend:v1
+          ports:
+            - containerPort: 8080
