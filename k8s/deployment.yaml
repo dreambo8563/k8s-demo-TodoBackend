@@ -17,6 +17,9 @@ spec:
     spec:
       containers:
         - name: component
-          image: dreambo8563docker/todo-backend:v1
+          image: dreambo8563docker/todo-backend:v2
+          envFrom:
+            - configMapRef:
+                name: todo-auth-config
           ports:
             - containerPort: 8080

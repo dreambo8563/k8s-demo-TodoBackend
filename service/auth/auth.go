@@ -3,9 +3,28 @@ package auth
 import (
 	"errors"
 	"net/http"
+	"os"
 
 	"github.com/imroc/req"
 )
+
+// const (
+// 	authServiceName = "SERVICE_NAME"
+// 	authServicePort = "SERVICE_PORT"
+// )
+
+var (
+	authServiceName = os.Getenv("SERVICE_NAME")
+	authServicePort = os.Getenv("SERVICE_PORT")
+)
+
+var authServiceURL = "http://localhost:6000/api/auth/login"
+
+func init() {
+	if authServiceName == "" || authServicePort == "" {
+		panic("not found auth service config map")
+	}
+}
 
 // GetToken - get token from auth service
 func GetToken(id string) (token string, err error) {
@@ -13,7 +32,9 @@ func GetToken(id string) (token string, err error) {
 		ID string `json:"id"`
 	}
 	reqParam.ID = id
-	r, err := req.Post("http://todo-auth-service:6000/api/auth/login", req.BodyJSON(&reqParam))
+
+	authServiceURL = "http://" + authServiceName + ":" + authServicePort + "/api/auth/login"
+	r, err := req.Post(authServiceURL, req.BodyJSON(&reqParam))
 	if err != nil {
 		return "", err
 	}
