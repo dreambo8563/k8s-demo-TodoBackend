@@ -8,17 +8,13 @@ import (
 	"github.com/imroc/req"
 )
 
-// const (
-// 	authServiceName = "SERVICE_NAME"
-// 	authServicePort = "SERVICE_PORT"
-// )
-
 var (
 	authServiceName = os.Getenv("SERVICE_NAME")
 	authServicePort = os.Getenv("SERVICE_PORT")
-)
 
-var authServiceURL = "http://localhost:6000/api/auth/login"
+	authServiceBaseURL = "http://" + authServiceName + ":" + authServicePort
+	authGetTokenURL    = authServiceBaseURL + "/api/auth/login"
+)
 
 func init() {
 	if authServiceName == "" || authServicePort == "" {
@@ -33,8 +29,7 @@ func GetToken(id string) (token string, err error) {
 	}
 	reqParam.ID = id
 
-	authServiceURL = "http://" + authServiceName + ":" + authServicePort + "/api/auth/login"
-	r, err := req.Post(authServiceURL, req.BodyJSON(&reqParam))
+	r, err := req.Post(authGetTokenURL, req.BodyJSON(&reqParam))
 	if err != nil {
 		return "", err
 	}
