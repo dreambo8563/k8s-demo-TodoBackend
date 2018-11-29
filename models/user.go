@@ -6,8 +6,14 @@ import (
 	"strconv"
 	"time"
 
+	"go.uber.org/zap"
+
+	"vincent.com/todo/service/logger"
+
 	"vincent.com/todo/service/auth"
 )
+
+var log = logger.Logger
 
 // User struct
 type User struct {
@@ -24,12 +30,15 @@ func (u *User) NewUID() {
 // NewToken - get a token for the user from auth services
 func (u *User) NewToken() error {
 	if u.ID == "" {
+		log.Error("NewToken", zap.String("err", "miss uid"))
 		return errors.New("missing user id")
 	}
 	token, err := auth.GetToken(u.ID)
 	if err != nil {
+		log.Error("auth.GetToken", zap.String("err", err.Error()))
 		return err
 	}
+	log.Info("get token", zap.String("token", token))
 	u.Token = token
 	return nil
 }

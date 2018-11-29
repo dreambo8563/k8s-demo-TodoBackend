@@ -17,8 +17,11 @@ var (
 )
 
 func init() {
-	if authServiceName == "" || authServicePort == "" {
-		panic("not found auth service config map")
+	if authServiceName == "" {
+		authServiceName = "localhost"
+	}
+	if authServicePort == "" {
+		authServicePort = "6000"
 	}
 }
 

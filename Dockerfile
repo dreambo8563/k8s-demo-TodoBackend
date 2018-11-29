@@ -11,6 +11,8 @@ FROM alpine:3.8
 
 WORKDIR /root/
 
+RUN mkdir /k8slog
+
 COPY --from=builder /hello/app .
 
 CMD ["./app"]

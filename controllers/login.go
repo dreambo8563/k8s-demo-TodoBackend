@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"go.uber.org/zap"
 	"vincent.com/todo/service/res"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ func LoginHandler(c *gin.Context) {
 	}
 	var login LoginReq
 	if err := c.ShouldBindJSON(&login); err != nil {
+		log.Sugar().Error("LoginHandler", "receive params err", login)
 		res.Err(c, err.Error())
 		return
 	}
@@ -23,11 +25,13 @@ func LoginHandler(c *gin.Context) {
 	}
 	// 此处模拟检查用户,获取uid过程
 	user.NewUID()
+	log.Info("new uid", zap.String("uid", user.ID))
 	err := user.NewToken()
 	if err != nil {
+		log.Error("new token", zap.String("err", err.Error()))
 		res.Err(c, err.Error())
 		return
 	}
-
+	log.Sugar().Infow("LoginHandler res", user)
 	res.JSON(c, &user)
 }

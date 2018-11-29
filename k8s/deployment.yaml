@@ -17,9 +17,19 @@ spec:
     spec:
       containers:
         - name: component
-          image: dreambo8563docker/todo-backend:v2
+          image: dreambo8563docker/todo-backend:v6
+          volumeMounts:
+            - mountPath: /k8slog
+              name: k8slog
           envFrom:
             - configMapRef:
                 name: todo-auth-config
           ports:
             - containerPort: 8080
+      volumes:
+        - name: k8slog
+          hostPath:
+            # directory location on host
+            path: /Users/vincent/Documents/Golang/logs
+            # this field is optional
+            type: DirectoryOrCreate
