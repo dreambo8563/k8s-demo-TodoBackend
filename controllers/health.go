@@ -23,3 +23,8 @@ func HealthCheckHandler(c *gin.Context) {
 	}
 	c.String(http.StatusOK, "ok")
 }
+
+// BoomHandler - Boom!
+func BoomHandler(c *gin.Context) {
+	log.Panic("BoomHandler")
+}
