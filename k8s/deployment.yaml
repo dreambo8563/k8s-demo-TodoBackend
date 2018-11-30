@@ -16,7 +16,7 @@ spec:
         component: todo-backend
     spec:
       containers:
-        - name: component
+        - name: todo-backend
           image: dreambo8563docker/todo-backend:v6
           volumeMounts:
             - mountPath: /k8slog

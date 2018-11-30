@@ -17,6 +17,7 @@ var (
 )
 
 func init() {
+	// set default value
 	if authServiceName == "" {
 		authServiceName = "localhost"
 	}
