@@ -1,3 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: todo-backend-service
+spec:
+  type: NodePort
+  selector:
+    component: todo-backend
+  ports:
+    - protocol: TCP
+      nodePort: 31000
+      port: 8080
+      targetPort: 8080
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,8 +30,20 @@ spec:
         component: todo-backend
     spec:
       containers:
-        - name: todo-backend
-          image: dreambo8563docker/todo-backend:v6
+        - name: todo-backend-pod
+          image: dreambo8563docker/todo-backend:v11
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
           volumeMounts:
             - mountPath: /k8slog
               name: k8slog

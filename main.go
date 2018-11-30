@@ -14,7 +14,7 @@ func main() {
 
 	r := gin.Default()
 	r.POST("/api/auth/login", controllers.LoginHandler)
-	r.GET("/api/auth/health", controllers.HealthCheckHandler)
+	r.GET("/healthz", controllers.HealthCheckHandler)
 	err := r.Run() // listen and serve on 0.0.0.0:8080
 	if err != nil {
 		log.Fatal("launch server fail:", zap.String("err", err.Error()))

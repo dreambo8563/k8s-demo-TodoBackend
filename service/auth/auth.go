@@ -5,15 +5,19 @@ import (
 	"net/http"
 	"os"
 
+	"vincent.com/todo/service/logger"
+
 	"github.com/imroc/req"
 )
 
+var log = logger.Logger
 var (
 	authServiceName = os.Getenv("SERVICE_NAME")
 	authServicePort = os.Getenv("SERVICE_PORT")
 
-	authServiceBaseURL = "http://" + authServiceName + ":" + authServicePort
-	authGetTokenURL    = authServiceBaseURL + "/api/auth/login"
+	authServiceBaseURL string
+	authGetTokenURL    string
+	authCheckHealthURL string
 )
 
 func init() {
@@ -24,6 +28,9 @@ func init() {
 	if authServicePort == "" {
 		authServicePort = "6000"
 	}
+	authServiceBaseURL = "http://" + authServiceName + ":" + authServicePort
+	authGetTokenURL = authServiceBaseURL + "/api/auth/login"
+	authCheckHealthURL = authServiceBaseURL + "/healthz"
 }
 
 // GetToken - get token from auth service
@@ -54,4 +61,10 @@ func GetToken(id string) (token string, err error) {
 		return "", err
 	}
 	return resParam.Token, nil
+}
+
+// HealthZ - auth service health check
+func HealthZ() error {
+	_, err := req.Get(authCheckHealthURL)
+	return err
 }
