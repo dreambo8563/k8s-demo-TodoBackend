@@ -7,10 +7,10 @@ import (
 	"os"
 	"time"
 
-	"go.uber.org/zap"
-
+	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"vincent.com/todo/rpc/helloworld"
 	"vincent.com/todo/service/logger"
@@ -49,10 +49,11 @@ func init() {
 }
 
 //InitAuthRPC -
-func InitAuthRPC() *grpc.ClientConn {
+func InitAuthRPC(tracer opentracing.Tracer) *grpc.ClientConn {
 	var err error
 	log.Info("grpc addr", zap.String("addr", authRPCServiceURL))
-	conn, err = grpc.Dial(authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(2*time.Second))
+	conn, err = grpc.Dial(authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(2*time.Second), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
+		otgrpc.OpenTracingStreamClientInterceptor(tracer)))
 	if err != nil {
 		log.Fatal("did not connect", zap.String("err", err.Error()))
 	}
@@ -61,7 +62,7 @@ func InitAuthRPC() *grpc.ClientConn {
 
 // GetToken - get token from auth service
 func GetToken(ctx context.Context, id string) (token string, err error) {
-	span, _ := opentracing.StartSpanFromContext(ctx, "GetTokenRequest")
+	span, childCtx := opentracing.StartSpanFromContext(ctx, "GetTokenRequest")
 	defer span.Finish()
 	var reqParam struct {
 		ID string `json:"id"`
@@ -76,7 +77,7 @@ func GetToken(ctx context.Context, id string) (token string, err error) {
 		opentracing.HTTPHeaders,
 		opentracing.HTTPHeadersCarrier(header),
 	)
-	hello()
+	hello(childCtx)
 	log.Info("http addr", zap.String("addr", authServiceBaseURL))
 	r, err := req.Post(authGetTokenURL, header, req.BodyJSON(&reqParam))
 	if err != nil {
@@ -107,9 +108,9 @@ func HealthZ() error {
 	return err
 }
 
-func hello() {
+func hello(ctx context.Context) {
 	c := helloworld.NewGreeterClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(ctx, time.Second)
 	defer cancel()
 	r, err := c.SayHello(ctx, &helloworld.HelloRequest{Name: name})
 	if err != nil {

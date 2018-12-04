@@ -17,7 +17,7 @@ func main() {
 	defer tracing.Closer.Close()
 
 	r := gin.Default()
-	authConn := auth.InitAuthRPC()
+	authConn := auth.InitAuthRPC(tracing.Tracer)
 	defer authConn.Close()
 	r.POST("/api/auth/login", controllers.LoginHandler)
 	r.GET("/healthz", controllers.HealthCheckHandler)

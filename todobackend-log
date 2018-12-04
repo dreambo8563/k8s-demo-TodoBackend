@@ -1,0 +1,7 @@
+{"level":"info","timestamp":"2018-12-04T18:35:36.617+0800","message":"grpc addr","service":"todo-backend","addr":"localhost:50051"}
+{"level":"info","timestamp":"2018-12-04T18:38:16.268+0800","message":"grpc addr","service":"todo-backend","addr":"localhost:50051"}
+{"level":"info","timestamp":"2018-12-04T18:38:25.224+0800","message":"new uid","service":"todo-backend","uid":"8508259415674504124"}
+{"level":"info","timestamp":"2018-12-04T18:38:25.226+0800","message":"Greeting: Hello world","service":"todo-backend"}
+{"level":"info","timestamp":"2018-12-04T18:38:25.226+0800","message":"http addr","service":"todo-backend","addr":"http://localhost:7000"}
+{"level":"info","timestamp":"2018-12-04T18:38:25.230+0800","message":"get token","service":"todo-backend","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI4NTA4MjU5NDE1Njc0NTA0MTI0IiwiZXhwIjoxNTQzOTIzNTA1LCJpc3MiOiJqd3QifQ.MBNx7nDE-P5iqEOKyLu2jDoXuWN_Fntx0Sw5MJA2yQQ"}
+{"level":"info","timestamp":"2018-12-04T18:38:25.230+0800","message":"LoginHandler res","service":"todo-backend","userInfo":{"name":"baaa","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI4NTA4MjU5NDE1Njc0NTA0MTI0IiwiZXhwIjoxNTQzOTIzNTA1LCJpc3MiOiJqd3QifQ.MBNx7nDE-P5iqEOKyLu2jDoXuWN_Fntx0Sw5MJA2yQQ","id":"8508259415674504124"}}
