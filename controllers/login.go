@@ -32,6 +32,6 @@ func LoginHandler(c *gin.Context) {
 		res.Err(c, err.Error())
 		return
 	}
-	log.Sugar().Infow("LoginHandler res", user)
+	log.Sugar().Infow("LoginHandler res", "userInfo", user)
 	res.JSON(c, &user)
 }

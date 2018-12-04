@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: todo-backend-pod
-          image: dreambo8563docker/todo-backend:v11
+          image: dreambo8563docker/todo-backend:v14
           readinessProbe:
             httpGet:
               path: /healthz

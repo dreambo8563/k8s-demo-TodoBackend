@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"vincent.com/todo/controllers"
+	"vincent.com/todo/service/auth"
 	"vincent.com/todo/service/logger"
 )
 
@@ -13,6 +14,8 @@ func main() {
 	// gin.SetMode(gin.ReleaseMode)
 
 	r := gin.Default()
+	authConn := auth.InitAuthRPC()
+	defer authConn.Close()
 	r.POST("/api/auth/login", controllers.LoginHandler)
 	r.GET("/healthz", controllers.HealthCheckHandler)
 	r.GET("/boom", controllers.BoomHandler)

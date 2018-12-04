@@ -478,7 +478,7 @@ func (d *bincDecDriver) DecodeTime() (t time.Time) {
 		d.d.errorf("cannot decode time - %s %x-%x/%s", msgBadDesc, d.vd, d.vs, bincdesc(d.vd, d.vs))
 		return
 	}
-	t, err := bincDecodeTime(d.r.readx(int(d.vs)))
+	t, err := bincDecodeTime(d.r.readx(uint(d.vs)))
 	if err != nil {
 		panic(err)
 	}
@@ -534,9 +534,9 @@ func (d *bincDecDriver) decUint() (v uint64) {
 		d.r.readb(d.b[4:8])
 		v = uint64(bigen.Uint32(d.b[4:8]))
 	case 4, 5, 6:
-		lim := int(7 - d.vs)
+		lim := 7 - d.vs
 		d.r.readb(d.b[lim:8])
-		for i := 0; i < lim; i++ {
+		for i := uint8(0); i < lim; i++ {
 			d.b[i] = 0
 		}
 		v = uint64(bigen.Uint64(d.b[:8]))
@@ -711,7 +711,7 @@ func (d *bincDecDriver) decStringAndBytes(bs []byte, withString, zerocopy bool) 
 		slen = d.decLen()
 		if zerocopy {
 			if d.br {
-				bs2 = d.r.readx(slen)
+				bs2 = d.r.readx(uint(slen))
 			} else if len(bs) == 0 {
 				bs2 = decByteSlice(d.r, slen, d.d.h.MaxInitLen, d.b[:])
 			} else {
@@ -820,7 +820,7 @@ func (d *bincDecDriver) DecodeBytes(bs []byte, zerocopy bool) (bsOut []byte) {
 	d.bdRead = false
 	if zerocopy {
 		if d.br {
-			return d.r.readx(clen)
+			return d.r.readx(uint(clen))
 		} else if len(bs) == 0 {
 			bs = d.b[:]
 		}
@@ -857,7 +857,7 @@ func (d *bincDecDriver) decodeExtV(verifyTag bool, tag byte) (xtag byte, xbs []b
 			return
 		}
 		if d.br {
-			xbs = d.r.readx(l)
+			xbs = d.r.readx(uint(l))
 		} else {
 			xbs = decByteSlice(d.r, l, d.d.h.MaxInitLen, d.d.b[:])
 		}
@@ -936,7 +936,7 @@ func (d *bincDecDriver) DecodeNaked() {
 		n.l = d.DecodeBytes(nil, false)
 	case bincVdTimestamp:
 		n.v = valueTypeTime
-		tt, err := bincDecodeTime(d.r.readx(int(d.vs)))
+		tt, err := bincDecodeTime(d.r.readx(uint(d.vs)))
 		if err != nil {
 			panic(err)
 		}
@@ -946,7 +946,7 @@ func (d *bincDecDriver) DecodeNaked() {
 		l := d.decLen()
 		n.u = uint64(d.r.readn1())
 		if d.br {
-			n.l = d.r.readx(l)
+			n.l = d.r.readx(uint(l))
 		} else {
 			n.l = decByteSlice(d.r, l, d.d.h.MaxInitLen, d.d.b[:])
 		}

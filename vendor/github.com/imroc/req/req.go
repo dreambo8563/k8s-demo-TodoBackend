@@ -3,7 +3,6 @@ package req
 import (
 	"bytes"
 	"compress/gzip"
-	"context"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -255,8 +254,6 @@ func (r *Req) Do(method, rawurl string, vs ...interface{}) (resp *Resp, err erro
 			resp.downloadProgress = vv
 		case func(int64, int64):
 			progress = vv
-		case context.Context:
-			req = req.WithContext(vv)
 		case error:
 			return nil, vv
 		}
@@ -323,15 +320,7 @@ func (r *Req) Do(method, rawurl string, vs ...interface{}) (resp *Resp, err erro
 		resp.client = r.Client()
 	}
 
-	var response *http.Response
-	if r.flag&Lcost != 0 {
-		before := time.Now()
-		response, err = resp.client.Do(req)
-		after := time.Now()
-		resp.cost = after.Sub(before)
-	} else {
-		response, err = resp.client.Do(req)
-	}
+	response, err := resp.client.Do(req)
 	if err != nil {
 		return nil, err
 	}

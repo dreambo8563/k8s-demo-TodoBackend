@@ -38,5 +38,4 @@ func init() {
 	}
 	defer Logger.Sync()
 
-	Logger.Info("logger construction succeeded")
 }
