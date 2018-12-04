@@ -9,10 +9,10 @@ import (
 
 	"go.uber.org/zap"
 
-	"vincent.com/todo/rpc/helloworld"
-
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"google.golang.org/grpc"
-
+	"vincent.com/todo/rpc/helloworld"
 	"vincent.com/todo/service/logger"
 
 	"github.com/imroc/req"
@@ -60,14 +60,25 @@ func InitAuthRPC() *grpc.ClientConn {
 }
 
 // GetToken - get token from auth service
-func GetToken(id string) (token string, err error) {
+func GetToken(ctx context.Context, id string) (token string, err error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "GetTokenRequest")
+	defer span.Finish()
 	var reqParam struct {
 		ID string `json:"id"`
 	}
 	reqParam.ID = id
+	header := make(http.Header)
+	ext.SpanKindRPCClient.Set(span)
+	ext.HTTPUrl.Set(span, authGetTokenURL)
+	ext.HTTPMethod.Set(span, "POST")
+	span.Tracer().Inject(
+		span.Context(),
+		opentracing.HTTPHeaders,
+		opentracing.HTTPHeadersCarrier(header),
+	)
 	hello()
 	log.Info("http addr", zap.String("addr", authServiceBaseURL))
-	r, err := req.Post(authGetTokenURL, req.BodyJSON(&reqParam))
+	r, err := req.Post(authGetTokenURL, header, req.BodyJSON(&reqParam))
 	if err != nil {
 		return "", err
 	}

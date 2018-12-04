@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"errors"
 	"math/rand"
 	"strconv"
@@ -8,9 +9,9 @@ import (
 
 	"go.uber.org/zap"
 
-	"vincent.com/todo/service/logger"
-
+	opentracing "github.com/opentracing/opentracing-go"
 	"vincent.com/todo/service/auth"
+	"vincent.com/todo/service/logger"
 )
 
 var log = logger.Logger
@@ -23,17 +24,22 @@ type User struct {
 }
 
 // NewUID - generate uid for a user
-func (u *User) NewUID() {
+func (u *User) NewUID(ctx context.Context) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "NewUID")
+	defer span.Finish()
 	u.ID = strconv.Itoa(rand.New(rand.NewSource(time.Now().UnixNano())).Int())
 }
 
 // NewToken - get a token for the user from auth services
-func (u *User) NewToken() error {
+func (u *User) NewToken(ctx context.Context) error {
+	span, childCtx := opentracing.StartSpanFromContext(ctx, "GetNewToken")
+	defer span.Finish()
 	if u.ID == "" {
+		span.LogKV("event", "verify", "err", "miss uid")
 		log.Error("NewToken", zap.String("err", "miss uid"))
 		return errors.New("missing user id")
 	}
-	token, err := auth.GetToken(u.ID)
+	token, err := auth.GetToken(childCtx, u.ID)
 	if err != nil {
 		log.Error("auth.GetToken", zap.String("err", err.Error()))
 		return err

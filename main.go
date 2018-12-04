@@ -6,12 +6,15 @@ import (
 	"vincent.com/todo/controllers"
 	"vincent.com/todo/service/auth"
 	"vincent.com/todo/service/logger"
+	"vincent.com/todo/service/tracing"
 )
 
 var log = logger.Logger
 
 func main() {
 	// gin.SetMode(gin.ReleaseMode)
+	tracing.Init("todo-backend-service")
+	defer tracing.Closer.Close()
 
 	r := gin.Default()
 	authConn := auth.InitAuthRPC()
