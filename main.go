@@ -20,6 +20,7 @@ func main() {
 	authConn := auth.InitAuthRPC(tracing.Tracer)
 	defer authConn.Close()
 	r.POST("/api/auth/login", controllers.LoginHandler)
+	r.POST("/api/auth/rpc/login", controllers.RPCLoginHandler)
 	r.GET("/healthz", controllers.HealthCheckHandler)
 	r.GET("/boom", controllers.BoomHandler)
 	err := r.Run() // listen and serve on 0.0.0.0:8080

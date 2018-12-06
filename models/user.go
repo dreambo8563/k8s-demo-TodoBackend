@@ -48,3 +48,22 @@ func (u *User) NewToken(ctx context.Context) error {
 	u.Token = token
 	return nil
 }
+
+// RPCNewToken - get a token for the user from auth services
+func (u *User) RPCNewToken(ctx context.Context) error {
+	span, childCtx := opentracing.StartSpanFromContext(ctx, "GetNewToken")
+	defer span.Finish()
+	if u.ID == "" {
+		span.LogKV("event", "verify", "err", "miss uid")
+		log.Error("NewToken", zap.String("err", "miss uid"))
+		return errors.New("missing user id")
+	}
+	token, err := auth.RPCGetToken(childCtx, u.ID)
+	if err != nil {
+		log.Error("auth.GetToken", zap.String("err", err.Error()))
+		return err
+	}
+	log.Info("get token", zap.String("token", token))
+	u.Token = token
+	return nil
+}

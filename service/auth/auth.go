@@ -29,7 +29,6 @@ var (
 )
 
 const (
-	name              = "world"
 	defautlServiceURL = "localhost:7000"
 	defaultRPCURL     = "localhost:50051"
 )
@@ -62,7 +61,7 @@ func InitAuthRPC(tracer opentracing.Tracer) *grpc.ClientConn {
 
 // GetToken - get token from auth service
 func GetToken(ctx context.Context, id string) (token string, err error) {
-	span, childCtx := opentracing.StartSpanFromContext(ctx, "GetTokenRequest")
+	span, _ := opentracing.StartSpanFromContext(ctx, "HTTP-GetTokenRequest")
 	defer span.Finish()
 	var reqParam struct {
 		ID string `json:"id"`
@@ -77,7 +76,7 @@ func GetToken(ctx context.Context, id string) (token string, err error) {
 		opentracing.HTTPHeaders,
 		opentracing.HTTPHeadersCarrier(header),
 	)
-	hello(childCtx)
+
 	log.Info("http addr", zap.String("addr", authServiceBaseURL))
 	r, err := req.Post(authGetTokenURL, header, req.BodyJSON(&reqParam))
 	if err != nil {
@@ -99,6 +98,7 @@ func GetToken(ctx context.Context, id string) (token string, err error) {
 	if err != nil {
 		return "", err
 	}
+
 	return resParam.Token, nil
 }
 
@@ -108,13 +108,24 @@ func HealthZ() error {
 	return err
 }
 
-func hello(ctx context.Context) {
+func hello(ctx context.Context, id string) (token string, err error) {
+	span, childCtx := opentracing.StartSpanFromContext(ctx, "helloRPC")
+	defer span.Finish()
 	c := helloworld.NewGreeterClient(conn)
-	ctx, cancel := context.WithTimeout(ctx, time.Second)
+	ctx, cancel := context.WithTimeout(childCtx, time.Second)
 	defer cancel()
-	r, err := c.SayHello(ctx, &helloworld.HelloRequest{Name: name})
+	r, err := c.SayHello(ctx, &helloworld.HelloRequest{Name: id})
 	if err != nil {
 		log.Sugar().Fatalf("could not greet: %v", err)
+		return "", err
 	}
 	log.Sugar().Infof("Greeting: %s", r.Message)
+	return r.Message, nil
+}
+
+// RPCGetToken - get token from auth service using RPC
+func RPCGetToken(ctx context.Context, id string) (token string, err error) {
+	span, childCtx := opentracing.StartSpanFromContext(ctx, "RPC-GetTokenRequest")
+	defer span.Finish()
+	return hello(childCtx, id)
 }

@@ -7,7 +7,8 @@ spec:
   selector:
     component: todo-backend
   ports:
-    - protocol: TCP
+    - name: http-agent
+      protocol: TCP
       nodePort: 31000
       port: 8080
       targetPort: 8080
@@ -31,7 +32,10 @@ spec:
     spec:
       containers:
         - name: todo-backend-pod
-          image: dreambo8563docker/todo-backend:v14
+          image: dreambo8563docker/todo-backend:v16
+          env:
+            - name: JAEGER_SERVICE_NAME
+              value: todo-backend
           readinessProbe:
             httpGet:
               path: /healthz
@@ -50,6 +54,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: todo-auth-config
+            - configMapRef:
+                name: jaeger-configuration
           ports:
             - containerPort: 8080
       volumes:
