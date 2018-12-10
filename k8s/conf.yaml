@@ -21,7 +21,7 @@ metadata:
     app: todo
     component: todo-backend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       component: todo-backend
@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
         - name: todo-backend-pod
-          image: dreambo8563docker/todo-backend:v16
+          image: dreambo8563docker/todo-backend:v17
           env:
             - name: JAEGER_SERVICE_NAME
               value: todo-backend

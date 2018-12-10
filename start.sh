@@ -1,0 +1,1 @@
+linkerd inject k8s/conf.yaml |  kubectl apply -f -
