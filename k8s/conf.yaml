@@ -32,10 +32,7 @@ spec:
     spec:
       containers:
         - name: todo-backend-pod
-          image: dreambo8563docker/todo-backend:v17
-          env:
-            - name: JAEGER_SERVICE_NAME
-              value: todo-backend
+          image: dreambo8563docker/todo-backend:v18
           readinessProbe:
             httpGet:
               path: /healthz

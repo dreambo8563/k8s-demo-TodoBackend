@@ -12,6 +12,8 @@ import (
 	"github.com/opentracing/opentracing-go/ext"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/balancer/roundrobin"
+	"google.golang.org/grpc/resolver"
 	"vincent.com/todo/rpc/helloworld"
 	"vincent.com/todo/service/logger"
 
@@ -51,7 +53,8 @@ func init() {
 func InitAuthRPC(tracer opentracing.Tracer) *grpc.ClientConn {
 	var err error
 	log.Info("grpc addr", zap.String("addr", authRPCServiceURL))
-	conn, err = grpc.Dial(authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(2*time.Second), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
+	resolver.SetDefaultScheme("dns")
+	conn, err = grpc.Dial(authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(2*time.Second), grpc.WithBalancerName(roundrobin.Name), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
 		otgrpc.OpenTracingStreamClientInterceptor(tracer)))
 	if err != nil {
 		log.Fatal("did not connect", zap.String("err", err.Error()))
