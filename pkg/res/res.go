@@ -6,6 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Response struct
+// type Response struct {
+// 	code int
+// 	data interface{}
+// 	msg  string
+// }
+
 // JSON - send json response
 func JSON(g *gin.Context, data interface{}) {
 	g.JSON(http.StatusOK, gin.H{"success": true, "data": data})

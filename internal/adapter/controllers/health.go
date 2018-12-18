@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"go.uber.org/zap"
-	"vincent.com/todo/service/auth"
-	"vincent.com/todo/service/logger"
+	"vincent.com/todo/pkg/auth"
+	"vincent.com/todo/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )
