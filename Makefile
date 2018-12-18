@@ -9,5 +9,6 @@ stop:
 docker:
 	docker build -f build/Dockerfile -t todo/backend:$(v) .
 	docker tag todo/backend:$(v) dreambo8563docker/todo-backend:$(v)
+	docker push dreambo8563docker/todo-backend:$(v)
 clean:
 	rm -f cmd/app/*log app
