@@ -12,7 +12,7 @@ import (
 
 	opentracing "github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
-	"vincent.com/todo/internal/adapter/http/rpc/helloworld"
+	authService "vincent.com/todo/internal/adapter/http/rpc/auth"
 	"vincent.com/todo/pkg/auth"
 	"vincent.com/todo/pkg/tracing"
 )
@@ -35,16 +35,16 @@ func NewUserRepository() *UserRepository {
 func (r *UserRepository) NewToken(ctx context.Context, u *model.User) (token string, err error) {
 	span, childCtx := opentracing.StartSpanFromContext(ctx, "RPC-GetTokenRequest")
 	defer span.Finish()
-	c := helloworld.NewGreeterClient(r.auth)
+	c := authService.NewAuthServiceClient(r.auth)
 	ctx, cancel := context.WithTimeout(childCtx, time.Second)
 	defer cancel()
-	res, err := c.SayHello(childCtx, &helloworld.HelloRequest{Name: u.GetID()})
+	res, err := c.GetToken(childCtx, &authService.GetTokenRequest{Uid: u.GetID()})
 	if err != nil {
 		log.Sugar().Fatalf("could not greet: %v", err)
 		return "", err
 	}
-	log.Sugar().Infof("Greeting: %s", res.Message)
-	return res.Message, nil
+	log.Sugar().Infof("Greeting: %s", res.Token)
+	return res.Token, nil
 }
 
 //CreateUser -
