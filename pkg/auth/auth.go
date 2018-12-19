@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -56,6 +57,10 @@ func NewAuthClient(tracer opentracing.Tracer) *Client {
 		return &Client{
 			Conn: conn,
 		}
+	}
+	if conn != nil {
+		fmt.Println(conn.GetState())
+		conn.Close()
 	}
 	var err error
 	log.Info("grpc addr", zap.String("addr", authRPCServiceURL))
