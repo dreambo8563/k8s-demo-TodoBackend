@@ -16,6 +16,8 @@ var (
 	Closer io.Closer
 )
 
+//TODO: need a struct as auth for tracer
+
 // Init returns an instance of Jaeger Tracer that samples 100% of traces and logs all spans to stdout.
 func Init(service string) (opentracing.Tracer, io.Closer) {
 	cfg, err := config.FromEnv()

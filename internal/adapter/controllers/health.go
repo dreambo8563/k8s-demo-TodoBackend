@@ -14,7 +14,6 @@ var log = logger.Logger
 
 // HealthCheckHandler - handler health check
 func HealthCheckHandler(c *gin.Context) {
-
 	err := auth.HealthZ()
 	if err != nil {
 		log.Error("HealthCheckHandler", zap.String("err", err.Error()))

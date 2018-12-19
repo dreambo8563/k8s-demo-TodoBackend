@@ -33,10 +33,8 @@ func RegisterHandler(c *gin.Context) {
 
 	ctx := opentracing.ContextWithSpan(context.Background(), span)
 	// 此处模拟检查用户,获取uid过程
-	repo := service.NewUserRepository()
-	uc := usecase.NewUserUsecase(repo)
-
-	user, token, err := uc.RegisterUser(ctx, login.User, login.Password)
+	userService := service.InitializeUserCase()
+	user, token, err := userService.RegisterUser(ctx, login.User, login.Password)
 
 	if err != nil {
 		log.Error("RegisterUser", zap.String("err", err.Error()))
