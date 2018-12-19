@@ -9,12 +9,12 @@ import (
 
 	"vincent.com/todo/internal/domain/model"
 
-	"vincent.com/todo/pkg/logger"
+	"vincent.com/todo/internal/pkg/logger"
 
 	opentracing "github.com/opentracing/opentracing-go"
 	authService "vincent.com/todo/internal/adapter/http/rpc/auth"
-	"vincent.com/todo/pkg/auth"
-	"vincent.com/todo/pkg/tracing"
+	"vincent.com/todo/internal/pkg/auth"
+	"vincent.com/todo/internal/pkg/tracing"
 )
 
 var log = logger.Logger

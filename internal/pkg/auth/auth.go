@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -12,7 +11,7 @@ import (
 	"google.golang.org/grpc/balancer/roundrobin"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/resolver"
-	"vincent.com/todo/pkg/logger"
+	"vincent.com/todo/internal/pkg/logger"
 
 	"github.com/imroc/req"
 )
@@ -59,13 +58,12 @@ func NewAuthClient(tracer opentracing.Tracer) *Client {
 		}
 	}
 	if conn != nil {
-		fmt.Println(conn.GetState())
 		conn.Close()
 	}
 	var err error
 	log.Info("grpc addr", zap.String("addr", authRPCServiceURL))
 	resolver.SetDefaultScheme("dns")
-	conn, err = grpc.Dial(authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(2*time.Second), grpc.WithBalancerName(roundrobin.Name), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
+	conn, err = grpc.Dial(authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(1*time.Second), grpc.WithBalancerName(roundrobin.Name), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
 		otgrpc.OpenTracingStreamClientInterceptor(tracer)))
 	if err != nil {
 		log.Error("did not connect", zap.String("err", err.Error()))

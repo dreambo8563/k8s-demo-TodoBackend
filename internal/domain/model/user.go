@@ -1,7 +1,7 @@
 package model
 
 import (
-	"vincent.com/todo/pkg/logger"
+	"vincent.com/todo/internal/pkg/logger"
 )
 
 var log = logger.Logger

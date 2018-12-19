@@ -3,9 +3,9 @@ package main
 import (
 	"go.uber.org/zap"
 	"vincent.com/todo/internal/adapter/http/rest"
-	"vincent.com/todo/pkg/auth"
-	"vincent.com/todo/pkg/logger"
-	"vincent.com/todo/pkg/tracing"
+	"vincent.com/todo/internal/pkg/auth"
+	"vincent.com/todo/internal/pkg/logger"
+	"vincent.com/todo/internal/pkg/tracing"
 )
 
 var log = logger.Logger

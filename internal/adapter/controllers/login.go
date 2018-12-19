@@ -10,8 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
-	"vincent.com/todo/pkg/res"
-	"vincent.com/todo/pkg/tracing"
+	"vincent.com/todo/internal/pkg/res"
+	"vincent.com/todo/internal/pkg/tracing"
 )
 
 // RegisterHandler - handler login api
