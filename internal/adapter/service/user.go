@@ -12,8 +12,6 @@ import (
 	"vincent.com/todo/pkg/logger"
 
 	opentracing "github.com/opentracing/opentracing-go"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/connectivity"
 	authService "vincent.com/todo/internal/adapter/http/rpc/auth"
 	"vincent.com/todo/pkg/auth"
 	"vincent.com/todo/pkg/tracing"
@@ -23,24 +21,24 @@ var log = logger.Logger
 
 //UserRepository -
 type UserRepository struct {
-	auth *grpc.ClientConn
+	auth *auth.Client
 }
 
 //NewUserRepository -
 func NewUserRepository() *UserRepository {
 	return &UserRepository{
-		auth: auth.InitAuthRPC(tracing.Tracer),
+		auth: auth.NewAuthClient(tracing.Tracer),
 	}
 }
 
 //NewToken -
 func (r *UserRepository) NewToken(ctx context.Context, u *model.User) (token string, err error) {
-	if r.auth.GetState() != connectivity.Ready {
+	if !r.auth.IsReady() {
 		return "", errors.New("can not connect to auth RPC server")
 	}
 	span, childCtx := opentracing.StartSpanFromContext(ctx, "RPC-GetTokenRequest")
 	defer span.Finish()
-	c := authService.NewAuthServiceClient(r.auth)
+	c := authService.NewAuthServiceClient(r.auth.Conn)
 	ctx, cancel := context.WithTimeout(childCtx, time.Second)
 	defer cancel()
 	res, err := c.GetToken(childCtx, &authService.GetTokenRequest{Uid: u.GetID()})

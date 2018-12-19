@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/balancer/roundrobin"
+	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/resolver"
 	"vincent.com/todo/pkg/logger"
 
@@ -30,6 +31,11 @@ const (
 	defaultRPCURL     = "localhost:50051"
 )
 
+//Client -
+type Client struct {
+	Conn *grpc.ClientConn
+}
+
 func init() {
 	// set default value
 	if authServiceURL == "" {
@@ -44,10 +50,12 @@ func init() {
 
 }
 
-//InitAuthRPC -
-func InitAuthRPC(tracer opentracing.Tracer) *grpc.ClientConn {
-	if conn != nil {
-		return conn
+//NewAuthClient -
+func NewAuthClient(tracer opentracing.Tracer) *Client {
+	if conn != nil && conn.GetState() <= connectivity.Ready {
+		return &Client{
+			Conn: conn,
+		}
 	}
 	var err error
 	log.Info("grpc addr", zap.String("addr", authRPCServiceURL))
@@ -55,78 +63,21 @@ func InitAuthRPC(tracer opentracing.Tracer) *grpc.ClientConn {
 	conn, err = grpc.Dial(authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(2*time.Second), grpc.WithBalancerName(roundrobin.Name), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
 		otgrpc.OpenTracingStreamClientInterceptor(tracer)))
 	if err != nil {
-		log.Fatal("did not connect", zap.String("err", err.Error()))
+		log.Error("did not connect", zap.String("err", err.Error()))
+		return &Client{}
 	}
-	return conn
+	return &Client{
+		Conn: conn,
+	}
 }
 
-// GetToken - get token from auth service
-// func GetToken(ctx context.Context, id string) (token string, err error) {
-// 	span, _ := opentracing.StartSpanFromContext(ctx, "HTTP-GetTokenRequest")
-// 	defer span.Finish()
-// 	var reqParam struct {
-// 		ID string `json:"id"`
-// 	}
-// 	reqParam.ID = id
-// 	header := make(http.Header)
-// 	ext.SpanKindRPCClient.Set(span)
-// 	ext.HTTPUrl.Set(span, authGetTokenURL)
-// 	ext.HTTPMethod.Set(span, "POST")
-// 	span.Tracer().Inject(
-// 		span.Context(),
-// 		opentracing.HTTPHeaders,
-// 		opentracing.HTTPHeadersCarrier(header),
-// 	)
-
-// 	log.Info("http addr", zap.String("addr", authServiceBaseURL))
-// 	r, err := req.Post(authGetTokenURL, header, req.BodyJSON(&reqParam))
-// 	if err != nil {
-// 		return "", err
-// 	}
-// 	if r.Response().StatusCode != http.StatusOK {
-// 		var msg struct {
-// 			Msg string `json:"msg"`
-// 		}
-// 		err = r.ToJSON(msg)
-// 		return "", errors.New(msg.Msg)
-// 	}
-
-// 	var resParam struct {
-// 		Token string `json:"token"`
-// 	}
-
-// 	err = r.ToJSON(&resParam)
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	return resParam.Token, nil
-// }
+//IsReady -
+func (c *Client) IsReady() bool {
+	return c.Conn != nil && c.Conn.GetState() == connectivity.Ready
+}
 
 // HealthZ - auth service health check
 func HealthZ() error {
 	_, err := req.Get(authCheckHealthURL)
 	return err
 }
-
-// func hello(ctx context.Context, id string) (token string, err error) {
-// 	span, childCtx := opentracing.StartSpanFromContext(ctx, "helloRPC")
-// 	defer span.Finish()
-// 	c := helloworld.NewGreeterClient(conn)
-// 	ctx, cancel := context.WithTimeout(childCtx, time.Second)
-// 	defer cancel()
-// 	r, err := c.SayHello(ctx, &helloworld.HelloRequest{Name: id})
-// 	if err != nil {
-// 		log.Sugar().Fatalf("could not greet: %v", err)
-// 		return "", err
-// 	}
-// 	log.Sugar().Infof("Greeting: %s", r.Message)
-// 	return r.Message, nil
-// }
-
-// RPCGetToken - get token from auth service using RPC
-// func RPCGetToken(ctx context.Context, id string) (token string, err error) {
-// 	span, childCtx := opentracing.StartSpanFromContext(ctx, "RPC-GetTokenRequest")
-// 	defer span.Finish()
-// 	return hello(childCtx, id)
-// }
