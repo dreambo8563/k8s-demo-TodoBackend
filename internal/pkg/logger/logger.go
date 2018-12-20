@@ -7,7 +7,14 @@ import (
 )
 
 // Logger - exported instantce
-var Logger *zap.Logger
+// var _logger *zap.Logger
+
+//Client -
+type Client struct {
+	logger *zap.Logger
+}
+
+var _logger *Client
 
 var (
 	cfg     zap.Config
@@ -29,12 +36,61 @@ var (
 )
 
 func init() {
+	initialLogger()
+}
+
+func initialLogger() {
 	if err = json.Unmarshal(rawJSON, &cfg); err != nil {
 		panic(err)
 	}
-	Logger, err = cfg.Build()
+	logger, err := cfg.Build()
 	if err != nil {
 		panic(err)
 	}
+	_logger = &Client{
+		logger: logger,
+	}
+}
 
+//Logger - get
+func Logger() *Client {
+	if _logger != nil {
+		initialLogger()
+	}
+	return _logger
+}
+
+//Sugar -
+func (c *Client) Sugar() *zap.SugaredLogger {
+	return c.logger.Sugar()
+}
+
+//Info -
+func (c *Client) Info(msg string, fields ...zap.Field) {
+	c.logger.Info(msg, fields...)
+}
+
+//Error -
+func (c *Client) Error(msg string, fields ...zap.Field) {
+	c.logger.Error(msg, fields...)
+}
+
+//Panic -
+func (c *Client) Panic(msg string, fields ...zap.Field) {
+	c.logger.Panic(msg, fields...)
+}
+
+//Fatal -
+func (c *Client) Fatal(msg string, fields ...zap.Field) {
+	c.logger.Fatal(msg, fields...)
+}
+
+//StringField -
+func (c *Client) String(key string, val string) zap.Field {
+	return zap.String(key, val)
+}
+
+//Sync -
+func (c *Client) Sync() {
+	c.logger.Sync()
 }

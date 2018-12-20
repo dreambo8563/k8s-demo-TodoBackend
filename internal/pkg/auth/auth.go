@@ -4,6 +4,8 @@ import (
 	"os"
 	"time"
 
+	"vincent.com/todo/internal/pkg/logger"
+
 	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
@@ -11,12 +13,10 @@ import (
 	"google.golang.org/grpc/balancer/roundrobin"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/resolver"
-	"vincent.com/todo/internal/pkg/logger"
 
 	"github.com/imroc/req"
 )
 
-var log = logger.Logger
 var (
 	authServiceURL     = os.Getenv("AUTH_SERVICE_URL")
 	authRPCServiceURL  = os.Getenv("AUTH_RPC_SERVICE_URL")
@@ -24,6 +24,7 @@ var (
 	authServiceBaseURL string
 	// authGetTokenURL    string
 	authCheckHealthURL string
+	log                = logger.Logger()
 )
 
 const (

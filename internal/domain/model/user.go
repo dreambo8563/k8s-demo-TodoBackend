@@ -1,11 +1,5 @@
 package model
 
-import (
-	"vincent.com/todo/internal/pkg/logger"
-)
-
-var log = logger.Logger
-
 // User struct
 type User struct {
 	Name     string `json:"name,omitempty"`

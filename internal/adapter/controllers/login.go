@@ -8,7 +8,6 @@ import (
 	"vincent.com/todo/internal/domain/usecase"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"vincent.com/todo/internal/pkg/res"
 	"vincent.com/todo/internal/pkg/tracing"
 )
@@ -36,7 +35,7 @@ func RegisterHandler(c *gin.Context) {
 	user, token, err := userService.RegisterUser(ctx, login.User, login.Password)
 
 	if err != nil {
-		log.Error("RegisterUser", zap.String("err", err.Error()))
+		log.Error("RegisterUser", log.String("err", err.Error()))
 		res.Err(c, err.Error())
 		return
 	}

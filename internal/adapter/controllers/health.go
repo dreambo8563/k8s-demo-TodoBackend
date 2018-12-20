@@ -3,20 +3,19 @@ package controllers
 import (
 	"net/http"
 
-	"go.uber.org/zap"
 	"vincent.com/todo/internal/pkg/auth"
 	"vincent.com/todo/internal/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )
 
-var log = logger.Logger
+var log = logger.Logger()
 
 // HealthCheckHandler - handler health check
 func HealthCheckHandler(c *gin.Context) {
 	err := auth.HealthZ()
 	if err != nil {
-		log.Error("HealthCheckHandler", zap.String("err", err.Error()))
+		log.Error("HealthCheckHandler", log.String("err", err.Error()))
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}

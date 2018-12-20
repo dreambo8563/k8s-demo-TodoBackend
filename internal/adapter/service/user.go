@@ -17,7 +17,7 @@ import (
 	"vincent.com/todo/internal/pkg/tracing"
 )
 
-var log = logger.Logger
+var log = logger.Logger()
 
 //UserRepository -
 type UserRepository struct {
