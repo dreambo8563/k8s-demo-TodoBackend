@@ -1,7 +1,7 @@
 v?=latest
 
 local:
-	go run cmd/app/main.go
+	export JAEGER_SERVICE_NAME=aaa && go run cmd/app/main.go
 start:
 	bash scripts/start.sh
 stop:

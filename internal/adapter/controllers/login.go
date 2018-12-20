@@ -8,7 +8,6 @@ import (
 	"vincent.com/todo/internal/domain/usecase"
 
 	"github.com/gin-gonic/gin"
-	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"vincent.com/todo/internal/pkg/res"
 	"vincent.com/todo/internal/pkg/tracing"
@@ -16,8 +15,8 @@ import (
 
 // RegisterHandler - handler login api
 func RegisterHandler(c *gin.Context) {
-	tracer := tracing.Tracer
-	span := tracer.StartSpan("RegisterHandler")
+	client := tracing.NewTraceClient()
+	span := client.StartSpan("RegisterHandler")
 	defer span.Finish()
 	type LoginReq struct {
 		User     string `json:"username"  binding:"required"`
@@ -31,7 +30,7 @@ func RegisterHandler(c *gin.Context) {
 		return
 	}
 
-	ctx := opentracing.ContextWithSpan(context.Background(), span)
+	ctx := tracing.ContextWithSpan(context.Background(), span)
 	// 此处模拟检查用户,获取uid过程
 	userService := service.InitializeUserCase()
 	user, token, err := userService.RegisterUser(ctx, login.User, login.Password)

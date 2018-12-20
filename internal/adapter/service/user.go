@@ -27,7 +27,7 @@ type UserRepository struct {
 //NewUserRepository -
 func NewUserRepository() *UserRepository {
 	return &UserRepository{
-		auth: auth.NewAuthClient(tracing.Tracer),
+		auth: auth.NewAuthClient(tracing.NewTraceClient().Tracer),
 	}
 }
 
@@ -36,7 +36,7 @@ func (r *UserRepository) NewToken(ctx context.Context, u *model.User) (token str
 	if !r.auth.IsReady() {
 		return "", errors.New("can not connect to auth RPC server")
 	}
-	span, childCtx := opentracing.StartSpanFromContext(ctx, "RPC-GetTokenRequest")
+	span, childCtx := tracing.StartSpanFromContext(ctx, "RPC-GetTokenRequest")
 	defer span.Finish()
 	c := authService.NewAuthServiceClient(r.auth.Conn)
 	ctx, cancel := context.WithTimeout(childCtx, time.Second)

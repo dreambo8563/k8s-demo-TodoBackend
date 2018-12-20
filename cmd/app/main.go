@@ -12,9 +12,9 @@ var log = logger.Logger
 
 func main() {
 	// gin.SetMode(gin.ReleaseMode)
-	tracing.Init("todo-backend-service")
-	defer tracing.Closer.Close()
-	authClient := auth.NewAuthClient(tracing.Tracer)
+	traceClient := tracing.NewTraceClient()
+	defer traceClient.Closer.Close()
+	authClient := auth.NewAuthClient(traceClient.GetTracer())
 	defer authClient.Conn.Close()
 	r := rest.InitServer()
 	err := r.Run() // listen and serve on 0.0.0.0:8080
