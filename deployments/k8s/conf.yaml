@@ -35,7 +35,7 @@ spec:
           image: dreambo8563docker/todo-backend:v20
           env:
             - name: JAEGER_SERVICE_NAME
-              value: todo-backend1
+              value: todo-backend
           readinessProbe:
             httpGet:
               path: /healthz
