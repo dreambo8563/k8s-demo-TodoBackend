@@ -17,18 +17,18 @@ syntax = "proto3";
 
 package auth;
 
-// The greeting service definition.
+//AuthService - The auth service definition.
 service AuthService {
-  // Sends a greeting
+  // GetToken - Get a Token by user info
   rpc GetToken (GetTokenRequest) returns (GetTokenReply) {}
 }
 
-// The request message containing the user's name.
+//GetTokenRequest - The request message containing the user id to generate token.
 message GetTokenRequest {
   string uid = 1;
 }
 
-// The response message containing the greetings
+//GetTokenReply - The response message containing the token string
 message GetTokenReply {
   string token = 1;
 }

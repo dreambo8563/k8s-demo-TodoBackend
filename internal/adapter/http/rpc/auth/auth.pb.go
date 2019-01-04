@@ -6,9 +6,10 @@ package auth
 import (
 	context "context"
 	fmt "fmt"
+	math "math"
+
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
-	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -22,7 +23,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-// The request message containing the user's name.
+//GetTokenRequest - The request message containing the user id to generate token.
 type GetTokenRequest struct {
 	Uid                  string   `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -62,7 +63,7 @@ func (m *GetTokenRequest) GetUid() string {
 	return ""
 }
 
-// The response message containing the greetings
+//GetTokenReply - The response message containing the token string
 type GetTokenReply struct {
 	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -134,7 +135,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type AuthServiceClient interface {
-	// Sends a greeting
+	// GetToken - Get a Token by user info
 	GetToken(ctx context.Context, in *GetTokenRequest, opts ...grpc.CallOption) (*GetTokenReply, error)
 }
 
@@ -157,7 +158,7 @@ func (c *authServiceClient) GetToken(ctx context.Context, in *GetTokenRequest, o
 
 // AuthServiceServer is the server API for AuthService service.
 type AuthServiceServer interface {
-	// Sends a greeting
+	// GetToken - Get a Token by user info
 	GetToken(context.Context, *GetTokenRequest) (*GetTokenReply, error)
 }
 
