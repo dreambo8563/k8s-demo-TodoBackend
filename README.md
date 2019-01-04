@@ -2,4 +2,4 @@
 
 ### API list
 
--/api/auth/login -> auth service
+- /api/auth/login -> auth service
