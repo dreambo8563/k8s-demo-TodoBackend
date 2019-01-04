@@ -17,9 +17,9 @@ jobs:
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/vincent.com/todo
+    working_directory: /src
     steps:
       - checkout
 
       # specify any bash command here prefixed with `run: `
-      - run: CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o /go/src/vincent.com/todo/cmd/app/app
+      - run: CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o /src/cmd/app/app
