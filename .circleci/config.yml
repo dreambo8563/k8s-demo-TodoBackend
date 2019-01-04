@@ -22,4 +22,5 @@ jobs:
       - checkout
 
       # specify any bash command here prefixed with `run: `
-      - run: CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o /src/cmd/app/app
+      - run: ls /src/cmd/app
+      - run: cd /src/cmd/app && CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o /src/cmd/app/app
