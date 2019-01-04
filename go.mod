@@ -16,6 +16,7 @@ require (
 	github.com/opentracing/opentracing-go v1.0.2
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rs/xid v1.2.1
 	github.com/stretchr/testify v1.2.2 // indirect
 	github.com/uber/jaeger-client-go v2.15.0+incompatible
 	github.com/uber/jaeger-lib v1.5.0 // indirect

@@ -31,6 +31,8 @@ github.com/opentracing/opentracing-go/log
 github.com/opentracing/opentracing-go/ext
 # github.com/pkg/errors v0.8.0
 github.com/pkg/errors
+# github.com/rs/xid v1.2.1
+github.com/rs/xid
 # github.com/uber/jaeger-client-go v2.15.0+incompatible
 github.com/uber/jaeger-client-go
 github.com/uber/jaeger-client-go/config
@@ -84,10 +86,10 @@ google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.16.0
 google.golang.org/grpc
 google.golang.org/grpc/balancer/roundrobin
+google.golang.org/grpc/connectivity
 google.golang.org/grpc/resolver
 google.golang.org/grpc/balancer
 google.golang.org/grpc/codes
-google.golang.org/grpc/connectivity
 google.golang.org/grpc/credentials
 google.golang.org/grpc/encoding
 google.golang.org/grpc/encoding/proto

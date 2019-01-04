@@ -9,3 +9,9 @@ func InitializeUserCase() *usecase.UserUsecase {
 	repo := NewUserRepository()
 	return usecase.NewUserUsecase(repo)
 }
+
+//InitializeUUIDCase -
+func InitializeUUIDCase() *usecase.UUIDUsecase {
+	repo := NewUUIDRepository()
+	return usecase.NewUUIDUsecase(repo)
+}

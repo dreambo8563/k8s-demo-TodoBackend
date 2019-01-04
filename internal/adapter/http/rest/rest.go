@@ -11,5 +11,6 @@ func InitServer() *gin.Engine {
 	r.POST("/api/auth/login", controllers.RegisterHandler)
 	r.GET("/healthz", controllers.HealthCheckHandler)
 	r.GET("/boom", controllers.BoomHandler)
+	r.GET("/uuid", controllers.UUIDHandler)
 	return r
 }
