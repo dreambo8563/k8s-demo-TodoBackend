@@ -60,6 +60,26 @@ func (r *UserRepository) CreateUser(ctx context.Context, name, password string) 
 	}, nil
 }
 
+//ParseToken -
+func (r *UserRepository) ParseToken(ctx context.Context, token string) (*model.User, error) {
+	if !r.auth.IsReady() {
+		return nil, errors.New("can not connect to auth RPC server")
+	}
+	c := authService.NewAuthServiceClient(r.auth.Conn)
+	ctx, cancel := context.WithTimeout(ctx, time.Second)
+	defer cancel()
+	res, err := c.ParseToken(ctx, &authService.ParseTokenRequest{
+		Token: token,
+	})
+	if err != nil {
+		return nil, err
+	}
+	log.Info("parse token get id", log.String("id", res.Id))
+	return &model.User{
+		ID: res.Id,
+	}, nil
+}
+
 // generate uid for a user / fake
 func newUID(ctx context.Context) string {
 	span, _ := opentracing.StartSpanFromContext(ctx, "NewUID")
