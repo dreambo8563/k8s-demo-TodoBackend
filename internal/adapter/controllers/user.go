@@ -8,6 +8,6 @@ import (
 
 //UserInfo - get UserInfo
 func UserInfo(c *gin.Context) {
-	user := c.MustGet("user").(usecase.User)
+	user := c.MustGet("user").(*usecase.User)
 	res.JSON(c, user)
 }

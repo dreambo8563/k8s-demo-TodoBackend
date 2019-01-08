@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"os"
 	"time"
 
@@ -64,7 +65,9 @@ func NewAuthClient(tracer opentracing.Tracer) *Client {
 	var err error
 	log.Info("grpc addr", zap.String("addr", authRPCServiceURL))
 	resolver.SetDefaultScheme("dns")
-	conn, err = grpc.Dial(authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(1*time.Second), grpc.WithBalancerName(roundrobin.Name), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+	conn, err = grpc.DialContext(ctx, authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithBalancerName(roundrobin.Name), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
 		otgrpc.OpenTracingStreamClientInterceptor(tracer)))
 	if err != nil {
 		log.Error("did not connect", zap.String("err", err.Error()))

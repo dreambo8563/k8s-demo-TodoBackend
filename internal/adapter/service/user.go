@@ -41,7 +41,7 @@ func (r *UserRepository) NewToken(ctx context.Context, u *model.User) (token str
 	c := authService.NewAuthServiceClient(r.auth.Conn)
 	ctx, cancel := context.WithTimeout(childCtx, time.Second)
 	defer cancel()
-	res, err := c.GetToken(childCtx, &authService.GetTokenRequest{Uid: u.GetID()})
+	res, err := c.GetToken(ctx, &authService.GetTokenRequest{Uid: u.GetID()})
 	if err != nil {
 		log.Sugar().Fatalf("could not greet: %v", err)
 		return "", err
