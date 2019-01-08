@@ -10,4 +10,5 @@ import (
 type UserRepository interface {
 	NewToken(context.Context, *model.User) (token string, err error)
 	CreateUser(context.Context, string, string) (*model.User, error)
+	ParseToken(context.Context, string) (*model.User, error)
 }

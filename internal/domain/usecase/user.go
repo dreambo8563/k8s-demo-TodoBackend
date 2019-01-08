@@ -11,12 +11,13 @@ import (
 // User -
 type User struct {
 	ID   string `json:"uid"`
-	Name string `json:"username"`
+	Name string `json:"username,omitempty"`
 }
 
 //IUserUsecase -
 type IUserUsecase interface {
 	RegisterUser(ctx context.Context, name, password string) (token string, err error)
+	GetInfo(ctx context.Context, token string) *User
 }
 
 //UserUsecase -
@@ -44,6 +45,16 @@ func (u *UserUsecase) RegisterUser(ctx context.Context, name, password string) (
 	}
 
 	return toUser(userItem), token, nil
+}
+
+//GetInfo -
+func (u *UserUsecase) GetInfo(ctx context.Context, token string) (*User, error) {
+	user, err := u.repo.ParseToken(ctx, token)
+	if err != nil {
+		return nil, err
+	}
+	// get info by user.ID
+	return toUser(user), nil
 }
 
 func toUser(user *model.User) *User {
