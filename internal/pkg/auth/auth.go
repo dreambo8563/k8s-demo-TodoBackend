@@ -67,7 +67,7 @@ func NewAuthClient(tracer opentracing.Tracer) *Client {
 	resolver.SetDefaultScheme("dns")
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
-	conn, err = grpc.DialContext(ctx, authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(1*time.Second), grpc.WithBalancerName(roundrobin.Name), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
+	conn, err = grpc.DialContext(ctx, authRPCServiceURL, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithBalancerName(roundrobin.Name), grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(tracer)), grpc.WithStreamInterceptor(
 		otgrpc.OpenTracingStreamClientInterceptor(tracer)))
 	if err != nil {
 		log.Error("did not connect", zap.String("err", err.Error()))
