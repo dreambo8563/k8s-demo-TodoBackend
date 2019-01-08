@@ -91,6 +91,6 @@ func (c *Client) String(key string, val string) zap.Field {
 }
 
 //Sync -
-func (c *Client) Sync() {
-	c.logger.Sync()
+func (c *Client) Sync() error {
+	return c.logger.Sync()
 }
