@@ -22,3 +22,8 @@ func JSON(g *gin.Context, data interface{}) {
 func Err(g *gin.Context, msg string) {
 	g.JSON(http.StatusOK, gin.H{"success": false, "data": "", "msg": msg})
 }
+
+//Abort -
+func Abort(g *gin.Context, code int) {
+	g.AbortWithStatus(code)
+}
