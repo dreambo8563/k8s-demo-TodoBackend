@@ -24,3 +24,10 @@ jobs:
       # specify any bash command here prefixed with `run: `
       - run: ls /src/cmd/app
       - run: cd /src/cmd/app && CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o /src/cmd/app/app
+      - run: go test -mod=vendor -race -coverprofile=coverage.txt -covermode=atomic /src/cmd/app/main.go
+      - run:
+          name: codecov
+          command: bash <(curl -s https://codecov.io/bash)
+          # Environment variable for a single command shell
+          environment:
+            CODECOV_TOKEN: 5ccd1a9d-450d-4626-abcd-ea33a05c24f4
