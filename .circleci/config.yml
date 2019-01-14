@@ -24,7 +24,7 @@ jobs:
       # specify any bash command here prefixed with `run: `
       - run: ls /src/cmd/app
       - run: cd /src/cmd/app && CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o /src/cmd/app/app
-      - run: go test -mod=vendor -race -coverprofile=coverage.txt -covermode=atomic all
+      - run: go test  ./... -mod=vendor -race -coverprofile=coverage.txt -covermode=atomic
       - run:
           name: codecov
           command: bash <(curl -s https://codecov.io/bash)
