@@ -66,3 +66,10 @@ func ContextWithSpan(ctx context.Context, span opentracing.Span) context.Context
 func StartSpanFromContext(ctx context.Context, span string) (opentracing.Span, context.Context) {
 	return opentracing.StartSpanFromContext(ctx, span)
 }
+
+//Close -
+func Close() {
+	if Client.Closer != nil {
+		Client.Closer.Close()
+	}
+}
