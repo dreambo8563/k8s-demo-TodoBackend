@@ -34,7 +34,7 @@ func main() {
 	// err := r.Run() // listen and serve on 0.0.0.0:8080
 	// Wait for interrupt signal to gracefully shutdown the server with
 	// a timeout of 5 seconds.
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	log.Info("Shutdown Server ...")
