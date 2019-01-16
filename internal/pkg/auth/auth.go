@@ -88,3 +88,10 @@ func HealthZ() error {
 	_, err := req.Get(authCheckHealthURL)
 	return err
 }
+
+// Close - Close conn
+func (c *Client) Close() {
+	if c.Conn != nil {
+		c.Conn.Close()
+	}
+}
