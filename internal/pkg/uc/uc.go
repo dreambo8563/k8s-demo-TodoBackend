@@ -28,7 +28,7 @@ func NewDB() *Client {
 		}
 	}
 	var err error
-	db, err = bolt.Open("internal/pkg/uc/uc.db", 0666, nil)
+	db, err = bolt.Open("uc.db", 0666, nil)
 	if err != nil {
 		fmt.Println("NewDB err", err)
 		return nil

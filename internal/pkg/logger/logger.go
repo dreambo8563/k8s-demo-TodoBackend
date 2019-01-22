@@ -22,7 +22,7 @@ var (
 	rawJSON = []byte(`{
 		"level": "debug",
 		"encoding": "json",
-		"outputPaths": ["stdout", "./todobackend-log"],
+		"outputPaths": ["stdout", "/k8slog/todobackend-log"],
 		"errorOutputPaths": ["stderr"],
 		"initialFields": {"service": "todo-backend"},
 		"encoderConfig": {

@@ -53,6 +53,8 @@ func (r *UserRepository) NewToken(ctx context.Context, u *model.User) (token str
 
 //CreateUser -
 func (r *UserRepository) CreateUser(ctx context.Context, name, password string) (*model.User, error) {
+	span, _ := tracing.StartSpanFromContext(ctx, "CreateUser")
+	defer span.Finish()
 	id := newUID(ctx)
 	fmt.Println("id", id)
 	fmt.Println("db", r.db)
@@ -108,6 +110,8 @@ func (r *UserRepository) GetUser(ctx context.Context, uid string) (*model.User, 
 
 //IsDup -
 func (r *UserRepository) IsDup(ctx context.Context, name string) (bool, error) {
+	span, _ := tracing.StartSpanFromContext(ctx, "user dup check")
+	defer span.Finish()
 	return r.db.GetByName(name)
 }
 
