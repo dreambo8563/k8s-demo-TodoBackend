@@ -49,6 +49,9 @@ func Destroy() {
 func (c *Client) Save(u *model.User) error {
 	return c.DB.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists([]byte(USERBUCKET))
+		if err != nil {
+			return err
+		}
 		buf, err := json.Marshal(u)
 		if err != nil {
 			return err
