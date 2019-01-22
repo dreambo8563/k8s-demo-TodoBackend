@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"vincent.com/todo/internal/domain/model"
@@ -37,6 +38,14 @@ func NewUserUsecase(repo repository.UserRepository) *UserUsecase {
 //RegisterUser -
 func (u *UserUsecase) RegisterUser(ctx context.Context, name, password string) (user *User, token string, err error) {
 	var userItem *model.User
+	var exist bool
+	exist, err = u.repo.IsDup(ctx, name)
+	if err != nil {
+		return nil, "", err
+	}
+	if exist {
+		return nil, "", errors.New("the username is used by others")
+	}
 	userItem, err = u.repo.CreateUser(ctx, name, password)
 	if err != nil {
 		return nil, "", err
