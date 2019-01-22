@@ -49,7 +49,7 @@ func (u *UserUsecase) RegisterUser(ctx context.Context, name, password string) (
 		return nil, "", err
 	}
 	if exist {
-		span.LogEvent("user exist")
+		span.LogKV("event", "user exist")
 		return nil, "", errors.New("the username is used by others")
 	}
 	userItem, err = u.repo.CreateUser(childCtx, name, password)
