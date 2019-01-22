@@ -98,12 +98,17 @@ func (r *UserRepository) GetUser(ctx context.Context, uid string) (*model.User, 
 		ID: uid,
 	}
 	fmt.Println(uid)
-	err := r.db.Get(user)
+	err := r.db.GetByID(user)
 	fmt.Println(user)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+//IsDup -
+func (r *UserRepository) IsDup(ctx context.Context, name string) (bool, error) {
+	return r.db.GetByName(name)
 }
 
 // generate uid for a user / fake

@@ -14,3 +14,4 @@ rpc:
 	protoc -I internal/adapter/http/rpc/auth/ internal/adapter/http/rpc/auth/auth.proto --go_out=plugins=grpc:internal/adapter/http/rpc/auth
 clean:
 	rm -f todobackend-log cmd/app/*log app
+	rm -f todobackend-log internal/pkg/uc/*.db

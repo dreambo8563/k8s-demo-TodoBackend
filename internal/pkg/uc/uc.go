@@ -28,7 +28,7 @@ func NewDB() *Client {
 		}
 	}
 	var err error
-	db, err = bolt.Open("uc.db", 0666, nil)
+	db, err = bolt.Open("internal/pkg/uc/uc.db", 0666, nil)
 	if err != nil {
 		fmt.Println("NewDB err", err)
 		return nil
@@ -46,6 +46,7 @@ func Destroy() {
 }
 
 // Save -
+// TODO: need to seperate the model in db and service
 func (c *Client) Save(u *model.User) error {
 	return c.DB.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists([]byte(USERBUCKET))
@@ -64,15 +65,45 @@ func (c *Client) Save(u *model.User) error {
 	})
 }
 
-// Get -
-func (c *Client) Get(u *model.User) error {
+// GetByID -
+// TODO: need to seperate the model in db and service
+func (c *Client) GetByID(u *model.User) error {
 	return c.DB.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(USERBUCKET))
+		b, err := tx.CreateBucketIfNotExists([]byte(USERBUCKET))
+		if err != nil {
+			return err
+		}
 		v := b.Get([]byte(u.ID))
-		err := json.Unmarshal(v, u)
+		err = json.Unmarshal(v, u)
 		if err != nil {
 			return err
 		}
 		return nil
 	})
+}
+
+// GetByName -
+func (c *Client) GetByName(name string) (bool, error) {
+	var exist bool
+	if err := c.DB.Update(func(tx *bolt.Tx) error {
+		b, err := tx.CreateBucketIfNotExists([]byte(USERBUCKET))
+		if err != nil {
+			return err
+		}
+		u := &model.User{}
+		return b.ForEach(func(k, v []byte) error {
+			err := json.Unmarshal(v, u)
+			if err != nil {
+				return err
+			}
+			if name == u.Name {
+				exist = true
+			}
+			fmt.Println("GetByName", u)
+			return nil
+		})
+	}); err != nil {
+		return false, err
+	}
+	return exist, nil
 }
