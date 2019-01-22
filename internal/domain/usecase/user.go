@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"vincent.com/todo/internal/pkg/tracing"
+
 	"vincent.com/todo/internal/domain/model"
 
 	"vincent.com/todo/internal/domain/repository"
@@ -39,20 +41,25 @@ func NewUserUsecase(repo repository.UserRepository) *UserUsecase {
 func (u *UserUsecase) RegisterUser(ctx context.Context, name, password string) (user *User, token string, err error) {
 	var userItem *model.User
 	var exist bool
-	exist, err = u.repo.IsDup(ctx, name)
+	span, childCtx := tracing.StartSpanFromContext(ctx, "RegisterUser- start check dup")
+	defer span.Finish()
+	exist, err = u.repo.IsDup(childCtx, name)
 	if err != nil {
+		span.LogKV("dup err", err)
 		return nil, "", err
 	}
 	if exist {
+		span.LogEvent("user exist")
 		return nil, "", errors.New("the username is used by others")
 	}
-	userItem, err = u.repo.CreateUser(ctx, name, password)
+	userItem, err = u.repo.CreateUser(childCtx, name, password)
 	if err != nil {
+		span.LogKV("CreateUser err", err)
 		return nil, "", err
 	}
-
-	token, err = u.repo.NewToken(ctx, userItem)
+	token, err = u.repo.NewToken(childCtx, userItem)
 	if err != nil {
+		span.LogKV("NewToken err", err)
 		return nil, "", err
 	}
 

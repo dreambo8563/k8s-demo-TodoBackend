@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
         - name: todo-backend-pod
-          image: dreambo8563docker/todo-backend:v20
+          image: dreambo8563docker/todo-backend:v23
           env:
             - name: JAEGER_SERVICE_NAME
               value: todo-backend
