@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	"vincent.com/todo/internal/adapter/service"
 
@@ -31,7 +32,9 @@ func RegisterHandler(c *gin.Context) {
 
 	ctx := tracing.ContextWithSpan(context.Background(), span)
 	// 此处模拟检查用户,获取uid过程
+
 	userService := service.InitializeUserCase()
+	fmt.Println(userService)
 	user, token, err := userService.RegisterUser(ctx, login.User, login.Password)
 
 	if err != nil {

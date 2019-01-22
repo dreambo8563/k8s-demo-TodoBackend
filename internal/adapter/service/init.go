@@ -2,7 +2,10 @@ package service
 
 import (
 	"vincent.com/todo/internal/domain/usecase"
+	"vincent.com/todo/internal/pkg/logger"
 )
+
+var log = logger.Logger()
 
 //InitializeUserCase -
 func InitializeUserCase() *usecase.UserUsecase {

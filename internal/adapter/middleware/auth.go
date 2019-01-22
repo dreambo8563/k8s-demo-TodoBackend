@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 
 	"vincent.com/todo/internal/adapter/service"
@@ -23,10 +24,12 @@ func Auth() gin.HandlerFunc {
 		}
 		userService := service.InitializeUserCase()
 		user, err := userService.GetInfo(c, token)
+		fmt.Println(token, err)
 		if err != nil {
 			res.Abort(c, http.StatusUnauthorized)
 			return
 		}
+		fmt.Println("after Abort")
 		log.Sugar().Infof("user %v,", user)
 		// Set example variable
 
