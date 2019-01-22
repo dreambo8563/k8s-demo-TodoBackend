@@ -7,6 +7,8 @@ import (
 	"os/signal"
 	"time"
 
+	"vincent.com/todo/internal/pkg/uc"
+
 	"vincent.com/todo/internal/adapter/http/rest"
 	"vincent.com/todo/internal/pkg/auth"
 	"vincent.com/todo/internal/pkg/logger"
@@ -44,6 +46,7 @@ func main() {
 	tracing.Close()
 	authClient.Close()
 	err := log.Sync()
+	uc.Destroy()
 	if err != nil {
 		log.Error("log.Sync error")
 	}
