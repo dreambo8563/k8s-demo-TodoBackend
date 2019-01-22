@@ -3,13 +3,14 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
 
-	"vincent.com/todo/internal/domain/model"
+	"vincent.com/todo/internal/pkg/uc"
 
-	"vincent.com/todo/internal/pkg/logger"
+	"vincent.com/todo/internal/domain/model"
 
 	opentracing "github.com/opentracing/opentracing-go"
 	authService "vincent.com/todo/internal/adapter/http/rpc/auth"
@@ -17,17 +18,17 @@ import (
 	"vincent.com/todo/internal/pkg/tracing"
 )
 
-var log = logger.Logger()
-
 //UserRepository -
 type UserRepository struct {
 	auth *auth.Client
+	db   *uc.Client
 }
 
 //NewUserRepository -
 func NewUserRepository() *UserRepository {
 	return &UserRepository{
 		auth: auth.NewAuthClient(tracing.NewTraceClient().Tracer),
+		db:   uc.NewDB(),
 	}
 }
 
@@ -53,6 +54,17 @@ func (r *UserRepository) NewToken(ctx context.Context, u *model.User) (token str
 //CreateUser -
 func (r *UserRepository) CreateUser(ctx context.Context, name, password string) (*model.User, error) {
 	id := newUID(ctx)
+	fmt.Println("id", id)
+	fmt.Println("db", r.db)
+	err := r.db.Save(&model.User{
+		Name:     name,
+		Password: password,
+		ID:       id,
+	})
+	fmt.Println("CreateUser", err)
+	if err != nil {
+		return nil, err
+	}
 	return &model.User{
 		Name:     name,
 		Password: password,
@@ -78,6 +90,20 @@ func (r *UserRepository) ParseToken(ctx context.Context, token string) (*model.U
 	return &model.User{
 		ID: res.Id,
 	}, nil
+}
+
+//GetUser -
+func (r *UserRepository) GetUser(ctx context.Context, uid string) (*model.User, error) {
+	user := &model.User{
+		ID: uid,
+	}
+	fmt.Println(uid)
+	err := r.db.Get(user)
+	fmt.Println(user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 // generate uid for a user / fake
