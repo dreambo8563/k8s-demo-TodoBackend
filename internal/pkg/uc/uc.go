@@ -49,7 +49,7 @@ func Destroy() {
 // TODO: need to seperate the model in db and service
 func (c *Client) Save(u *model.User) error {
 	return c.DB.Update(func(tx *bolt.Tx) error {
-		b, err := tx.CreateBucketIfNotExists([]byte(USERBUCKET))
+		b, err := getUserBucket(tx)
 		if err != nil {
 			return err
 		}
@@ -69,7 +69,7 @@ func (c *Client) Save(u *model.User) error {
 // TODO: need to seperate the model in db and service
 func (c *Client) GetByID(u *model.User) error {
 	return c.DB.View(func(tx *bolt.Tx) error {
-		b, err := tx.CreateBucketIfNotExists([]byte(USERBUCKET))
+		b, err := getUserBucket(tx)
 		if err != nil {
 			return err
 		}
@@ -86,7 +86,7 @@ func (c *Client) GetByID(u *model.User) error {
 func (c *Client) GetByName(name string) (bool, error) {
 	var exist bool
 	if err := c.DB.Update(func(tx *bolt.Tx) error {
-		b, err := tx.CreateBucketIfNotExists([]byte(USERBUCKET))
+		b, err := getUserBucket(tx)
 		if err != nil {
 			return err
 		}
@@ -106,4 +106,7 @@ func (c *Client) GetByName(name string) (bool, error) {
 		return false, err
 	}
 	return exist, nil
+}
+func getUserBucket(tx *bolt.Tx) (*bolt.Bucket, error) {
+	return tx.CreateBucketIfNotExists([]byte(USERBUCKET))
 }
