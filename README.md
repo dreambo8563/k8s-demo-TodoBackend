@@ -7,6 +7,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/dreambo8563/k8s-demo-TodoBackend)](https://goreportcard.com/report/github.com/dreambo8563/k8s-demo-TodoBackend)
 [![codecov](https://codecov.io/gh/dreambo8563/k8s-demo-TodoBackend/branch/master/graph/badge.svg)](https://codecov.io/gh/dreambo8563/k8s-demo-TodoBackend)
 [![languages](https://img.shields.io/badge/languages-golang-blue.svg)](https://shields.io/)
+[![BCH compliance](https://bettercodehub.com/edge/badge/dreambo8563/k8s-demo-TodoBackend?branch=master)](https://bettercodehub.com/)
 
 ### API list
 
